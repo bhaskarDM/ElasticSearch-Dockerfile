@@ -1,9 +1,10 @@
-FROM ubuntu:latest
-RUN apt-get update && apt-get install -y git openjdk-15-jdk wget tar
-ENV ES_VERSION=7.13.4
-ENV ES_HOME=/opt/elasticsearch
-RUN wget -q https://github.com/elastic/elasticsearch/archive/v${ES_VERSION}.tar.gz -O elasticsearch.tar.gz && tar -xf elasticsearch.tar.gz && mv elasticsearch-${ES_VERSION} ${ES_HOME} && rm elasticsearch.tar.gz
-WORKDIR ${ES_HOME}
-RUN ./gradlew assemble
+FROM adoptopenjdk:11-jre-hotspot
+ENV ES_VERSION=7.14.0
+ENV ES_HOME=/usr/share/elasticsearch
+ENV PATH=$ES_HOME/bin:$PATH
+RUN set -eux && cd /tmp && wget -q https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && tar -xf elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz -C /usr/share/ && rm elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && mv /usr/share/elasticsearch-${ES_VERSION} $ES_HOME
+COPY elasticsearch.yml $ES_HOME/config/elasticsearch.yml
+RUN chown -R daemon:daemon $ES_HOME
 EXPOSE 9200 9300
-CMD ["./bin/elasticsearch"]
+USER daemon
+CMD ["elasticsearch"]

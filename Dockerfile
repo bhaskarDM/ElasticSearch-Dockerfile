@@ -1,11 +1,20 @@
-FROM adoptopenjdk:11-jre-hotspot
-ENV ES_VERSION=7.14.0
-ENV ES_HOME=/usr/share/elasticsearch
-ENV PATH=$ES_HOME/bin:$PATH
-RUN apt-get update && apt-get install wget -y
-RUN set -eux && cd /tmp && wget -q https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && tar -xf elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz -C /usr/share/ && rm elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && mv /usr/share/elasticsearch-${ES_VERSION} $ES_HOME
-COPY elasticsearch.yml $ES_HOME/config/elasticsearch.yml
-RUN chown -R daemon:daemon $ES_HOME
+# Use a base image with Ubuntu
+FROM ubuntu:latest
+
+# Install required packages
+RUN apt-get update && apt-get install -y wget apt-transport-https
+
+# Import the Elasticsearch GPG key
+RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+
+# Add the Elasticsearch repository
+RUN echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-8.x.list
+
+# Update and install Elasticsearch
+RUN apt-get update && apt-get install -y elasticsearch
+
+# Expose the Elasticsearch port
 EXPOSE 9200 9300
-USER daemon
+
+# Start Elasticsearch
 CMD ["elasticsearch"]

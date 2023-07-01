@@ -5,5 +5,4 @@ RUN echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo 
 RUN sudo apt-get update && sudo apt-get install elasticsearch -y
 COPY elasticsearch.yml /etc/elasticsearch
 EXPOSE 9200
-RUN systemctl daemon-reload && systemctl enable elasticsearch.service && 
-systemctl start elasticsearch.service
+RUN systemctl daemon-reload && systemctl enable elasticsearch.service && systemctl start elasticsearch.service

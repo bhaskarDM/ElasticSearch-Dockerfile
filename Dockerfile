@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 #some_ important _library
 RUN apt-get update && apt-get install wget build-essential gcc make -y
-RUN apt-get install software-properties-common
+RUN apt-get install software-properties-common -y
 #Install_JAVA
 RUN apt-get install default-jdk -y
 RUN apt-get install openjdk-8-jre -y

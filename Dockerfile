@@ -1,23 +1,9 @@
-FROM ubuntu:16.04
-RUN apt-get update && apt-get install wget build-essential gcc make -y
-RUN apt-get install software-properties-common  -y
-RUN apt-get install default-jdk -y
-RUN apt-get install openjdk-8-jre -y
-RUN apt-get update
-RUN wget -O - https://packages.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-RUN echo  "deb  http://packages.elastic.co/elasticsearch/2.x/debian stable main" | tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
-RUN apt-get install apt-transport-https
-RUN apt-get update && apt-get install elasticsearch -y
-RUN apt-get install git -y
-RUN apt-get install python2.7 -y
-RUN apt-get install vim  -y
-RUN apt-get update && apt-get install -y openssh-server
-RUN mkdir /var/run/sshd
-RUN echo 'root:password' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-ENV NOTVISIBLE "in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
-RUN service ssh restart
+FROM ubuntu:22.04
+RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+RUN sudo apt-get install apt-transport-https -y
+RUN echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+RUN sudo apt-get update && sudo apt-get install elasticsearch -y
+COPY elasticsearch.yml /etc/elasticsearch
+EXPOSE 9200
+RUN systemctl daemon-reload && systemctl enable elasticsearch.service && 
+systemctl start elasticsearch.service

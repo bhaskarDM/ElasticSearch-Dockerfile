@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 RUN apt-get update && apt-get install wget build-essential gcc make -y
-RUN apt-get install common-software-properties  -y
+RUN apt-get install software-properties-common  -y
 RUN apt-get install default-jdk -y
 RUN apt-get install openjdk-8-jre -y
 RUN apt-get update

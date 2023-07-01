@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Install required packages
 RUN apt-get update && apt-get install -y wget apt-transport-https
-RUN apt-get -y gnupg 
+RUN apt-get install -y gnupg 
 
 # Import the Elasticsearch GPG key
 RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
